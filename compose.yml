@@ -1,0 +1,26 @@
+services:
+  api:
+    build: ./api
+    volumes:
+      - ./api:/app
+    tty: true
+    ports:
+      - "8080:8080"
+
+  migration:
+    build: ./import
+    volumes:
+      - ./import:/app
+    
+  mysql:
+    build: ./database
+    env_file:
+      - ./database/.env
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./database/conf.d:/etc/mysql/conf.d
+      - db-data:/var/lib/mysql
+      
+volumes:
+  db-data:
