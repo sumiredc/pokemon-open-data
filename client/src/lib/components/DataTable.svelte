@@ -1,13 +1,9 @@
 <script lang="ts">
+	import type { Pokemon } from '$lib/api/v1.js';
 	import DataTable, { Head, Body, Row, Cell, Label, SortValue } from '@smui/data-table';
 	import IconButton from '@smui/icon-button';
 
 	export let data: Pokemon[];
-
-	type Pokemon = {
-		number: number;
-		name: string;
-	};
 
 	let sort: keyof Pokemon = 'number';
 	let sortDirection: Lowercase<keyof typeof SortValue> = 'ascending';
@@ -36,13 +32,19 @@
 >
 	<Head>
 		<Row>
-			<Cell numeric columnId="id">
-				<IconButton class="material-icons">arrow_upward</IconButton>
+			<Cell numeric columnId="number">
 				<Label>Number</Label>
+				<IconButton class="material-icons">arrow_upward</IconButton>
 			</Cell>
 			<Cell columnId="name" style="width: 100%;">
 				<Label>Name</Label>
 				<IconButton class="material-icons">arrow_upward</IconButton>
+			</Cell>
+			<Cell columnId="type1.name" style="width: 100%;">
+				<Label>Type1</Label>
+			</Cell>
+			<Cell columnId="type2.name" style="width: 100%;">
+				<Label>Type2</Label>
 			</Cell>
 		</Row>
 	</Head>
@@ -50,7 +52,9 @@
 		{#each data as pokemon (pokemon.number)}
 			<Row>
 				<Cell numeric>{pokemon.number}</Cell>
-				<Cell>{pokemon.name}</Cell>
+				<Cell>{pokemon.name}({pokemon.englishName})</Cell>
+				<Cell>{pokemon.type1.name}</Cell>
+				<Cell>{pokemon.type2?.name ?? ''}</Cell>
 			</Row>
 		{/each}
 	</Body>

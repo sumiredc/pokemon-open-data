@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Paper, { Title, Content } from '@smui/paper';
 	import DataTable from '$lib/components/DataTable.svelte';
 	import { Api } from '$lib/api/v1.js';
 
@@ -7,8 +8,7 @@
 	async function getPokemonList() {
 		try {
 			const { data } = await api.pokemon.pokemonList();
-
-			return data.data;
+			return data;
 		} catch (error) {
 			console.log(error);
 			throw new Error('データの取得に失敗しました');
@@ -23,5 +23,8 @@
 {:then pokemonList}
 	<DataTable data={pokemonList} />
 {:catch error}
-	<p style="color: red">{error.message}</p>
+	<Paper color="primary" variant="outlined" class="mdc-theme--primary">
+		<Title>Data fetch error</Title>
+		<Content>{error.message}</Content>
+	</Paper>
 {/await}

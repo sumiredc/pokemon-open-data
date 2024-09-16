@@ -24,3 +24,7 @@ vite.config.ts.timestamp-*
 
 # OpenAPI Client
 src/lib/api
+
+# css
+static/smui-dark.css
+static/smui.css
