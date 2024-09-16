@@ -5,6 +5,7 @@ use once_cell::sync::Lazy;
 
 #[derive(Debug)]
 pub struct Config {
+    pub client_url: String,
     pub database_url: String,
     pub host: String,
     pub port: u16,
@@ -13,6 +14,7 @@ pub struct Config {
 impl Config {
     pub fn new() -> Self {
         Self {
+            client_url: env::var("CLIENT_URL").unwrap_or_default(),
             database_url: env::var("DATABASE_URL").unwrap_or_default(),
             host: env::var("HOST").unwrap_or_default(),
             port: env::var("PORT")

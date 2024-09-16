@@ -1,4 +1,8 @@
-use actix_web::{web::Data, App, HttpServer};
+use actix_cors::Cors;
+use actix_web::{
+    web::{self, Data},
+    App, HttpServer,
+};
 use mysql::Pool;
 
 use crate::{
@@ -9,13 +13,25 @@ use crate::{
 #[actix_web::main]
 pub async fn run() -> std::io::Result<()> {
     let addr = format!("{}:{}", CONFIG.host, CONFIG.port);
+    let client_url = CONFIG.client_url.as_str();
 
     HttpServer::new(|| {
         App::new()
+            .wrap(
+                Cors::default()
+                    .allowed_origin(client_url)
+                    .allowed_methods(vec!["GET"])
+                    .max_age(3600),
+            )
             .app_data(Data::new(RequestContext::new()).clone())
-            .service(interface_adapter::controller::pokemon_controller::index)
-            .service(interface_adapter::controller::pokemon_controller::show)
-            .service(interface_adapter::controller::dashboard::index)
+            .service(
+                web::scope("/api").service(
+                    web::scope("/v1")
+                        .service(interface_adapter::controller::pokemon_controller::index)
+                        .service(interface_adapter::controller::pokemon_controller::show)
+                        .service(interface_adapter::controller::dashboard::index),
+                ),
+            )
     })
     .bind(addr)?
     .run()
