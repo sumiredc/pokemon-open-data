@@ -5,7 +5,20 @@ services:
       - ./api:/app
     tty: true
     ports:
-      - "8080:8080"
+      - "3000:3000"
+
+  web:
+    build: ./web
+    ports:
+      - "8080:80"
+
+  client:
+    build: ./client
+    volumes:
+      - ./client:/app
+    tty: true
+    ports:
+      - "5173:5173"
 
   migration:
     build: ./import
