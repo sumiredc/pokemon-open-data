@@ -1,0 +1,59 @@
+openapi: 3.0.2
+info:
+  title: Pokemon Open Data API
+  version: "1.0"
+servers:
+  - url: http://localhost:8080/api/v1
+
+paths:
+  /pokemon:
+    get:
+      summary: ポケモン 一覧
+      description: ポケモンの一覧を取得する
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Pokemon'
+                required:
+                  - code
+                  - message
+                  - data
+                    
+components:
+  parameters:
+    AcceptHeader:
+      name: accept
+      in: header
+      description: Request header for content type
+      required: false
+      schema:
+        type: string
+        enum:
+          - application/json
+        default: application/json
+
+  schemas:
+    Pokemon:
+      type: object
+      properties:
+        number:
+          type: integer
+          minimum: 1
+          maximum: 65535
+        name:
+          type: string
+      required:
+        - number
+        - name
