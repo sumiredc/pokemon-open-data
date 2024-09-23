@@ -1,11 +1,14 @@
 openapi: 3.0.2
+
 info:
   title: Pokemon Open Data API
   version: "1.0"
+
 servers:
   - url: http://localhost:8080/api/v1
 
 paths:
+  # GET: /pokemon
   /pokemon:
     get:
       summary: ポケモン 一覧
@@ -19,6 +22,48 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Pokemon'
+  # GET: /summary/type
+  /summary/type:
+    get:
+      summary: 集計 タイプ
+      description: ポケモンのタイプを集計する
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Summary'
+  # GET: /summary/generation
+  /summary/generation:
+    get:
+      summary: 集計 世代
+      description: ポケモンの世代を集計する
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Summary'
+  # GET: /summary/stats
+  /summary/stats:
+    get:
+      summary: 集計 ステータス
+      description: ポケモンのステータスを集計する
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Summary'
 
 components:
   parameters:
@@ -34,6 +79,7 @@ components:
         default: application/json
 
   schemas:
+    # Pokemon
     Pokemon:
       type: object
       properties:
@@ -53,13 +99,19 @@ components:
         type2:
           nullable: true
           $ref: '#/components/schemas/Type'
+        generation:
+          $ref: '#/components/schemas/Generation'
+        stats:
+          $ref: '#/components/schemas/Stats'
       required:
         - id
         - number
         - name
         - englishName
         - type1
-        - type2
+        - generation
+        - stats
+    # Type
     Type:
       type: object
       properties:
@@ -71,4 +123,65 @@ components:
       required:
         - id
         - name
+    # Generation
+    Generation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        value:
+          type: integer
+          minimum: 1
+          maximum: 255
+      required:
+        - id
+        - value
+    # Summary
+    Summary:
+      type: object
+      properties:
+        label:
+          type: string
+        value:
+          type: integer
+          minimum: 0
+      required:
+        - label
+        - value
+    Stats:
+      type: object
+      properties:
+        hp:
+          type: integer
+          minimum: 0
+          maximum: 255
+        attack:
+          type: integer
+          minimum: 0
+          maximum: 255
+        defense:
+          type: integer
+          minimum: 0
+          maximum: 255
+        spAttack:
+          type: integer
+          minimum: 0
+          maximum: 255
+        spDefense:
+          type: integer
+          minimum: 0
+          maximum: 255
+        speed:
+          type: integer
+          minimum: 0
+          maximum: 255
+      required:
+        - hp
+        - attack
+        - defense
+        - spAttack
+        - spDefense
+        - speed
+
 

@@ -30,11 +30,13 @@
 		"svelte": "^4.0.0"
 	},
 	"devDependencies": {
+		"@smui/layout-grid": "^7.0.0",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/package": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@types/eslint": "^9.6.0",
+		"chartjs-plugin-datalabels": "^2.2.0",
 		"eslint": "^9.0.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.36.0",
@@ -57,7 +59,9 @@
 		"@smui/data-table": "^7.0.0",
 		"@smui/icon-button": "^7.0.0",
 		"@smui/paper": "^7.0.0",
+		"chart.js": "^4.4.4",
 		"smui-theme": "^7.0.0",
+		"svelte-chartjs": "^3.1.5",
 		"swagger-typescript-api": "^13.0.22"
 	}
 }
