@@ -6,8 +6,12 @@ use actix_web::{
 use mysql::Pool;
 
 use crate::{
-    config::CONFIG, domain::model::repository::PokemonRepository,
-    infrastructure::mysql::pokemon_repository::PokemonRepositoryImpl, interface_adapter,
+    config::CONFIG,
+    domain::model::repository::{PokemonRepository, SummaryRepository},
+    infrastructure::mysql::{
+        pokemon_repository::PokemonRepositoryImpl, summary_repository::SummaryRepositoryImpl,
+    },
+    interface_adapter,
 };
 
 #[actix_web::main]
@@ -24,12 +28,15 @@ pub async fn run() -> std::io::Result<()> {
                     .max_age(3600),
             )
             .app_data(Data::new(RequestContext::new()).clone())
+            .service(interface_adapter::controller::check_controller::ok)
             .service(
                 web::scope("/api").service(
                     web::scope("/v1")
                         .service(interface_adapter::controller::pokemon_controller::index)
                         .service(interface_adapter::controller::pokemon_controller::show)
-                        .service(interface_adapter::controller::dashboard::index),
+                        .service(interface_adapter::controller::summary_controller::r#type)
+                        .service(interface_adapter::controller::summary_controller::generation)
+                        .service(interface_adapter::controller::summary_controller::stats),
                 ),
             )
     })
@@ -53,6 +60,12 @@ impl RequestContext {
 
     pub fn pokemon_repository(&self) -> impl PokemonRepository {
         PokemonRepositoryImpl {
+            pool: Box::new(self.pool.to_owned()),
+        }
+    }
+
+    pub fn summary_repository(&self) -> impl SummaryRepository {
+        SummaryRepositoryImpl {
             pool: Box::new(self.pool.to_owned()),
         }
     }

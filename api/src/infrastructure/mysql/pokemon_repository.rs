@@ -4,7 +4,12 @@ use mysql::{
     Pool,
 };
 
-use crate::domain::model::{pokemon::Pokemon, r#type::Type, repository::PokemonRepository};
+use crate::domain::{
+    entity::stats::Stats,
+    model::{
+        generation::Generation, pokemon::Pokemon, r#type::Type, repository::PokemonRepository,
+    },
+};
 
 pub struct PokemonRepositoryImpl {
     pub pool: Box<Pool>,
@@ -20,6 +25,14 @@ struct PokemonSchema {
     type1_name: String,
     type2_id: Option<String>,
     type2_name: Option<String>,
+    generation_id: String,
+    generation_value: u8,
+    hp: u8,
+    attack: u8,
+    defense: u8,
+    sp_attack: u8,
+    sp_defense: u8,
+    speed: u8,
 }
 
 impl PokemonSchema {
@@ -34,6 +47,15 @@ impl PokemonSchema {
                 (Some(type_id), Some(name)) => Some(Type::new(type_id, name)),
                 _ => None,
             },
+            Generation::new(self.generation_id.clone(), self.generation_value.clone()),
+            Stats::new(
+                self.hp,
+                self.attack,
+                self.defense,
+                self.sp_attack,
+                self.sp_defense,
+                self.speed,
+            ),
         )
     }
 }
@@ -47,10 +69,27 @@ impl PokemonRepository for PokemonRepositoryImpl {
             Ok(mut conn) => {
                 let query = r#"
                 SELECT 
-                    number, 
-                    name 
+                    pokemon.pokemon_id, 
+                    pokemon.number, 
+                    pokemon.name,
+                    pokemon.english_name,
+                    pokemon.type1_id,
+                    type1.name AS type1_name,
+                    pokemon.type2_id,
+                    type2.name AS type2_name,
+                    generation.generation_id,
+                    generation.value AS generation_value,
+                    pokemon.hp,
+                    pokemon.attack,
+                    pokemon.defense,
+                    pokemon.sp_attack,
+                    pokemon.sp_defense,
+                    pokemon.speed
                 FROM 
-                    pokemon 
+                    pokemon
+                    INNER JOIN type AS type1 ON type1.type_id = pokemon.type1_id
+                    LEFT JOIN type AS type2 ON type2.type_id = pokemon.type2_id
+                    INNER JOIN generation ON generation.generation_id = pokemon.generation_id
                 WHERE 
                     number = :number
                 "#;
@@ -85,11 +124,23 @@ impl PokemonRepository for PokemonRepositoryImpl {
                     pokemon.type1_id,
                     type1.name AS type1_name,
                     pokemon.type2_id,
-                    type2.name AS type2_name
+                    type2.name AS type2_name,
+                    pokemon.generation_id,
+                    generation.value AS generation_value,
+                    pokemon.hp,
+                    pokemon.attack,
+                    pokemon.defense,
+                    pokemon.sp_attack,
+                    pokemon.sp_defense,
+                    pokemon.speed
                 FROM 
                     pokemon
                     INNER JOIN type AS type1 ON type1.type_id = pokemon.type1_id
                     LEFT JOIN type AS type2 ON type2.type_id = pokemon.type2_id
+                    INNER JOIN generation ON generation.generation_id = pokemon.generation_id
+
+                ORDER BY
+                    pokemon.number
                 ";
                 match conn.exec::<PokemonSchema, _, _>(query, ()) {
                     Ok(res) => Some(res.iter().map(|schema| schema.to_model()).collect()),

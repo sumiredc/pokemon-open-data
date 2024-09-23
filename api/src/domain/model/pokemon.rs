@@ -1,6 +1,6 @@
-use crate::domain::entity::uuid::Uuid;
+use crate::domain::entity::{stats::Stats, uuid::Uuid};
 
-use super::r#type::Type;
+use super::{generation::Generation, r#type::Type};
 
 pub struct Pokemon {
     id: Uuid,
@@ -9,6 +9,8 @@ pub struct Pokemon {
     english_name: String,
     type1: Type,
     type2: Option<Type>,
+    generation: Generation,
+    stats: Stats,
 }
 
 impl Pokemon {
@@ -19,6 +21,8 @@ impl Pokemon {
         english_name: String,
         type1: Type,
         type2: Option<Type>,
+        generation: Generation,
+        stats: Stats,
     ) -> Self {
         Self {
             id: Uuid::new(id),
@@ -27,6 +31,8 @@ impl Pokemon {
             english_name,
             type1,
             type2,
+            generation,
+            stats,
         }
     }
 
@@ -52,5 +58,13 @@ impl Pokemon {
 
     pub fn type2(&self) -> &Option<Type> {
         &self.type2
+    }
+
+    pub fn generation(&self) -> &Generation {
+        &self.generation
+    }
+
+    pub fn stats(&self) -> &Stats {
+        &self.stats
     }
 }

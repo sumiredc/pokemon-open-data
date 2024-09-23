@@ -7,7 +7,7 @@ use actix_web::{
 use crate::{
     infrastructure::actix::router::RequestContext,
     interface_adapter::responder::{
-        error_responder::ErrorResponder, pokemon_responder::PokemonReponder,
+        error_responder::ErrorResponder, pokemon_responder::PokemonResponder,
     },
     use_case::{
         input::pokemon_get_input::PokemonGetInput, pokemon_get_use_case::PokemonGetUseCase,
@@ -21,7 +21,7 @@ async fn index(data: Data<RequestContext>) -> impl Responder {
 
     match use_case.execute() {
         Ok(output) => {
-            let responder = PokemonReponder {};
+            let responder = PokemonResponder {};
             HttpResponse::Ok().json(responder.create_all(output.data()))
         }
         Err(_) => {
@@ -38,7 +38,7 @@ async fn show(data: Data<RequestContext>, number: Path<u16>) -> impl Responder {
 
     match use_case.execute(input) {
         Ok(output) => {
-            let responder = PokemonReponder {};
+            let responder = PokemonResponder {};
             HttpResponse::Ok().json(responder.create(output.data()))
         }
         Err(_) => {

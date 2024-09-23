@@ -2,9 +2,9 @@ use crate::domain::model::pokemon::Pokemon;
 
 use super::schema::PokemonSchema;
 
-pub struct PokemonReponder {}
+pub struct PokemonResponder {}
 
-impl PokemonReponder {
+impl PokemonResponder {
     pub fn create(&self, pokemon: &Pokemon) -> PokemonSchema {
         PokemonSchema::new(pokemon)
     }
