@@ -21,16 +21,3 @@ bun install
 ```bash
 bun run dev
 ```
-
-## Building
-
-```bash
-bun run package
-```
-
-To create a production version of your showcase app:
-
-```bash
-bun run build
-```
-

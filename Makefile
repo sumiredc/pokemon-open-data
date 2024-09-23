@@ -14,24 +14,31 @@ setup-migration:
 # 🐳 コンテナ操作
 .PHONY: api api-bash mysql mysql-bash client client-bash web-bash
 
+## API Server
 api:
 	@docker compose exec api cargo watch -x run
 
 api-bash:
 	@docker compose exec api bash
 
+## Database Server
 mysql:
 	@docker compose exec mysql mysql -u root -p$(MYSQL_ROOT_PASSWORD) $(MYSQL_DATABASE)
 
 mysql-bash:
 	@docker compose exec mysql bash
 
+## Client Server
 client:
 	@docker compose exec client bun dev
 
 client-bash:
 	@docker compose exec client bash
 
+client-setup:
+	@docker compose exec client bun install
+
+## Web Server
 web-bash:
 	@docker compose exec web bash
 
